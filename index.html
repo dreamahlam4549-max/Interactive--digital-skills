@@ -64,6 +64,22 @@ const qs=[
 ];let qi=0,score=0,answered={};
 function loadQuiz(){let q=qs[qi];document.getElementById('qText').textContent=`السؤال ${qi+1} من ${qs.length}: ${q.q}`;let el=document.getElementById('quizChoices');el.innerHTML='';q.a.forEach((a,i)=>{let b=document.createElement('button');b.className='choice';b.textContent=a;b.onclick=()=>{el.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');b.dataset.answer=i};el.appendChild(b)});document.getElementById('quizFeedback').className='feedback';document.getElementById('quizFeedback').textContent='';}
 function checkQuiz(){if(answered[qi]!==undefined){return}let selected=document.querySelector('#quizChoices .selected');if(!selected){let f=document.getElementById('quizFeedback');f.textContent='اختاري إجابة أولًا.';f.className='feedback show bad';return}let ans=Number(selected.dataset.answer),q=qs[qi];answered[qi]=ans;if(ans===q.c){score++;selected.classList.add('correct')}else selected.classList.add('wrong');let f=document.getElementById('quizFeedback');f.textContent=(ans===q.c?'إجابة صحيحة! ':'ليست الإجابة الصحيحة. ')+q.e;f.className='feedback show '+(ans===q.c?'good':'bad');document.getElementById('score').textContent=`نتيجتك حتى الآن: ${score} من ${Object.keys(answered).length}`;}
-function nextQuiz(){if(qi<qs.length-1){qi++;loadQuiz()}else{document.getElementById('qText').textContent=`انتهى التقويم! نتيجتك: ${score} من ${qs.length}`;document.getElementById('quizChoices').innerHTML='<button class="primary" onclick="qi=0;score=0;answered={};document.getElementById(\\'score\\').textContent=\\'\\';loadQuiz()">إعادة الاختبار</button>';document.getElementById('quizFeedback').textContent='راجعي المحطات السابقة إذا رغبتِ في تثبيت المعلومات.';document.getElementById('quizFeedback').className='feedback show good';}}
+function nextQuiz(){
+  if(qi<qs.length-1){
+    qi++;
+    loadQuiz();
+  } else {
+    document.getElementById('qText').textContent=`انتهى التقويم! نتيجتك: ${score} من ${qs.length}`;
+    const choices=document.getElementById('quizChoices');
+    choices.innerHTML='';
+    const restart=document.createElement('button');
+    restart.className='primary';
+    restart.textContent='إعادة الاختبار';
+    restart.onclick=()=>{qi=0;score=0;answered={};document.getElementById('score').textContent='';loadQuiz();};
+    choices.appendChild(restart);
+    document.getElementById('quizFeedback').textContent='راجعي المحطات السابقة إذا رغبتِ في تثبيت المعلومات.';
+    document.getElementById('quizFeedback').className='feedback show good';
+  }
+}
 render();loadQuiz();
 </script></body></html>
